@@ -8,10 +8,14 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build": "vue-cli-service build --target lib --dest lib",
+    "build:demo": "vue-cli-service build --modern",
+    "build:type": "tsc --emitDeclarationOnly"
   },
   "main": "lib/index.js",
+  "module": "src/lib.js",
+  "types": "types/main.d.ts",
   "dependencies": {
     "@types/d3-scale-chromatic": "^1.5.0",
     "d3-hierarchy": "^1.1.9",

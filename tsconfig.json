@@ -23,14 +23,17 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "declaration": true,
+    "declarationDir": "types"
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "src/lib.js"
   ],
   "exclude": [
     "node_modules"

@@ -1,10 +1,19 @@
 <meta charset="utf-8">
 <title>treemap demo</title>
+<script src="https://unpkg.com/vue"></script>
 <script src="./treemap.umd.js"></script>
 
 <link rel="stylesheet" href="./treemap.css">
 
 
+<div id="app">
+  <demo></demo>
+</div>
+
 <script>
-console.log(treemap)
+new Vue({
+  components: {
+    demo: treemap
+  }
+}).$mount('#app')
 </script>

@@ -1,84 +1,76 @@
 <template>
   <div class="dm-treemap">
-    <svg v-if="treeMap" :width="width" :height="height">
-      <g v-for="(d, i) of treeMap.children" :key="i" :fill="getColor(i)">
-        <rect
-          style="stroke-width:1; stroke:white"
-          :x="d.x0"
-          :y="d.y0"
-          :width="d.x1 - d.x0"
-          :height="d.y1 - d.y0"
+    <div style="color:white;min-height:1em;">{{ value.label }}</div>
+    <div ref="child" style="position:relative;flex:1 1 100%;">
+      <template v-if="d3t">
+        <dm-treemap
+          v-for="(child, i) of d3t.children"
+          :key="i"
+          :value="child.data"
+          :width="width"
+          :height="height"
+          style="position:absolute"
+          :style="{ ...getPosition(child), ...getSize(child) }"
         />
-        <text fill="white" :x="d.x0 + 10" :y="d.y0 + 20">{{ d.data.text }} {{ d.value }}</text>
-        <g v-for="(c, j) of d.children" :key="`${i}-${j}`" fill="transparent">
-          <rect
-            style="stroke-width:1; stroke:white; opacity:0.4;"
-            :x="c.x0"
-            :y="c.y0"
-            :width="c.x1 - c.x0"
-            :height="c.y1 - c.y0"
-          />
-        </g>
-      </g>
-    </svg>
+      </template>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { Hierarchy } from '../main'
 import * as d3 from 'd3-hierarchy'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 
-export interface ValueType {
-  children?: ValueType;
-  text?: string;
+function treemap<T>(width: number, height: number): d3.TreemapLayout<T> {
+  return d3.treemap<T>().tile(d3.treemapBinary).size([width, height])
 }
 
 export default Vue.extend({
+  name: 'DmTreemap',
   props: {
-    value: {
-      type: Object as PropType<ValueType>,
-      required: true
-    },
-    width: {
-      type: Number as PropType<number>,
-      default: 1024
-    },
-    height: {
-      type: Number as PropType<number>,
-      default: 768
-    },
-    colors: {
-      type: Array as PropType<string[]>,
-      default: () => schemeCategory10
+    value: { type: Object as PropType<Hierarchy>, required: true }
+  },
+  data(): { d3t?: d3.HierarchyRectangularNode<Hierarchy> } {
+    return {
+      d3t: undefined
     }
   },
-  data(): { treeMap?: d3.HierarchyRectangularNode<unknown> } {
-    return {
-      treeMap: undefined
+  computed: {
+    d3h() {
+      const { value } = this
+      return d3.hierarchy(value).sum((d) => d.children ? 0 : 1)
     }
   },
   mounted() {
-    this.treeMap = this.calculate()
+    const { d3h, $refs } = this
+    if ($refs.child instanceof Element) {
+      const childWidth = $refs.child.clientWidth
+      const childHeight = $refs.child.clientHeight
+      this.d3t = treemap<Hierarchy>(childWidth, childHeight)(d3h)
+    }
   },
   methods: {
-    calculate(v?: ValueType) {
-      const { width, height } = this
-      const value = v || this.value
-
-      const d3h = d3.hierarchy(value)
-        .sum((d) => d.children ? 0 : 1)
-
-      const calculator = d3.treemap()
-        .tile(d3.treemapBinary)
-        .size([width, height])
-
-      return calculator(d3h)
+    getPosition(rect: d3.HierarchyRectangularNode<Hierarchy>) {
+      const { x0, y0 } = rect
+      return { top: `${y0}px`, left: `${x0}px` }
     },
-    getColor(i: number) {
-      const { colors } = this
-      return colors[i % colors.length]
+    getSize(rect: d3.HierarchyRectangularNode<Hierarchy>) {
+      const { x0, x1, y0, y1 } = rect
+      const width = `${x1 - x0 - 16 - 1}px`
+      const height = `${y1 - y0 - 16 - 1}px`
+      return { width, height }
     }
   }
 })
 </script>
+
+<style scoped>
+.dm-treemap {
+  border: 1px solid #fff;
+  background-color: rgba(0, 0, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+</style>

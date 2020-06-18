@@ -6,3 +6,7 @@ Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
 }).$mount('#app')
+
+export interface Hierarchy {
+  children?: Hierarchy[];
+}

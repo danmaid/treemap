@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <dm-treemap :value="sample" style="width:1024px;height:768px;" />
+    <dm-treemap :value="sample" style="width: 1024px; height: 768px;" #default="{ value }">
+      <div>{{ value.text }}</div>
+    </dm-treemap>
   </div>
 </template>
 
@@ -24,9 +26,9 @@ export default Vue.extend({
               { label: 'b2', value: 5 },
               {
                 label: 'b3', value: 3, children: [
-                  { label: 'b3-1', value: 2 },
-                  { label: 'b3-2', value: 2 },
-                  { label: 'b3-3', value: 1 }
+                  { text: 'b3-1 text', value: 2 },
+                  { text: 'b3-2 text', value: 2 },
+                  { text: 'b3-3 text', value: 1 }
                 ]              },
               { label: 'b4', value: 2 },
               { label: 'b5', value: 1 }

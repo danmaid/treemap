@@ -1,4 +1,4 @@
-export interface Hierarchy {
-    text?: string;
-    children?: Hierarchy[];
+export interface Hierarchy<T = unknown> {
+    label?: string;
+    children?: T[] | Hierarchy[];
 }

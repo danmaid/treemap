@@ -7,6 +7,7 @@ new Vue({
   render: h => h(App),
 }).$mount('#app')
 
-export interface Hierarchy {
-  children?: Hierarchy[];
+export interface Hierarchy<T = unknown> {
+  label?: string;
+  children?: T[] | Hierarchy[];
 }

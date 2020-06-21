@@ -46,6 +46,10 @@ export type Position = {
   right?: string;
   bottom?: string;
 }
+type DataType = {
+  d3t?: d3.HierarchyRectangularNode<Hierarchy>;
+  selected: boolean;
+}
 
 export default Vue.extend({
   name: 'DmTreemap',
@@ -54,20 +58,21 @@ export default Vue.extend({
     size: { type: Object as PropType<Size>, default() { return {} } },
     position: { type: Object as PropType<Position>, default() { return {} } }
   },
-  data(): { d3t?: d3.HierarchyRectangularNode<Hierarchy>; selected: boolean } {
+  data(): DataType {
     return {
       d3t: undefined,
       selected: false
     }
   },
   computed: {
-    d3h() {
+    d3h(): d3.HierarchyNode<Hierarchy> {
       const { value } = this
       return d3.hierarchy(value).sum((d) => d.children ? 0 : 1)
     },
-    override() {
-      return this.selected
-        ? { width: '100%', height: '100%', top: 0, left: 0 }
+    override(): Size & Position | undefined {
+      const { selected } = this
+      return selected
+        ? { width: '100%', height: '100%', top: '0', left: '0' }
         : undefined
     }
   },

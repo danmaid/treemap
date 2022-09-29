@@ -19,7 +19,7 @@
   "dependencies": {
     "@types/d3-scale-chromatic": "^1.5.0",
     "d3-hierarchy": "^1.1.9",
-    "d3-scale-chromatic": "^1.5.0",
+    "d3-scale-chromatic": "^3.0.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
